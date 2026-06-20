@@ -1,0 +1,35 @@
+services:
+  n8n:
+    image: n8nio/n8n:1.107.4
+    container_name: n8n
+    restart: unless-stopped
+    # Exposto apenas em localhost — nunca acessível pela internet.
+    ports:
+      - "127.0.0.1:5678:5678"
+    environment:
+      - N8N_HOST=localhost
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=http
+      - WEBHOOK_URL=http://localhost:5678/
+      - GENERIC_TIMEZONE=America/Sao_Paulo
+      - TZ=America/Sao_Paulo
+      # Criptografa as credenciais salvas no n8n. Definida no .env local.
+      - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY}
+    volumes:
+      - n8n_data:/home/node/.n8n
+    depends_on:
+      - qdrant
+
+  qdrant:
+    image: qdrant/qdrant:v1.15.1
+    container_name: qdrant
+    restart: unless-stopped
+    # Também só em localhost — acessado apenas pelo n8n na rede interna.
+    ports:
+      - "127.0.0.1:6333:6333"
+    volumes:
+      - qdrant_storage:/qdrant/storage
+
+volumes:
+  n8n_data:
+  qdrant_storage:
