@@ -1,0 +1,23 @@
+# Segredos e variáveis de ambiente — NUNCA versionar
+.env
+.env.*
+*.env
+*.pem
+*.key
+
+# Dados persistidos dos containers (volumes locais)
+n8n_data/
+qdrant_storage/
+
+# Configuração de ferramentas locais (não faz parte do projeto)
+.claude/
+.vscode/
+.idea/
+
+# Sistema operacional
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# Logs
+*.log
