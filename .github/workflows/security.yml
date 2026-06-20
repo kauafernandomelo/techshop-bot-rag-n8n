@@ -1,0 +1,21 @@
+name: Segurança
+
+# Escaneia o repositório em busca de segredos vazados a cada push e PR.
+on:
+  push:
+  pull_request:
+
+jobs:
+  gitleaks:
+    name: Verificação de segredos (Gitleaks)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # histórico completo para escanear todos os commits
+
+      - name: Rodar Gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

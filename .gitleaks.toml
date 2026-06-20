@@ -1,0 +1,13 @@
+title = "Gitleaks - atendente-ia-n8n"
+
+# Usa todas as regras padrão do Gitleaks (chaves de API, tokens, etc.)
+# e adiciona uma regra específica para o token de bot do Telegram.
+[extend]
+useDefault = true
+
+[[rules]]
+id = "telegram-bot-token"
+description = "Token de bot do Telegram"
+regex = '''\b\d{8,10}:[A-Za-z0-9_-]{35}\b'''
+keywords = ["telegram", "bot"]
+tags = ["telegram", "secret"]
