@@ -17,6 +17,8 @@ services:
       - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY}
     volumes:
       - n8n_data:/home/node/.n8n
+      # Base de conhecimento (somente leitura) usada pelo workflow de ingestão.
+      - ./knowledge-base:/home/node/knowledge-base:ro
     depends_on:
       - qdrant
 
