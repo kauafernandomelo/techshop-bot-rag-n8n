@@ -3,14 +3,18 @@ services:
     image: n8nio/n8n:1.107.4
     container_name: n8n
     restart: unless-stopped
-    # Exposto apenas em localhost — nunca acessível pela internet.
+    # Editor exposto só em localhost. Os webhooks do Telegram chegam pela URL
+    # pública do túnel Cloudflare (serviço `cloudflared` abaixo), informada ao
+    # n8n via WEBHOOK_URL — necessário porque o Telegram não enxerga o localhost.
+    # Recurso de desenvolvimento/demo; em produção seria um domínio com HTTPS.
     ports:
       - "127.0.0.1:5678:5678"
     environment:
       - N8N_HOST=localhost
       - N8N_PORT=5678
       - N8N_PROTOCOL=http
-      - WEBHOOK_URL=http://localhost:5678/
+      # URL pública do túnel Cloudflare — definida no .env local após subir o túnel.
+      - WEBHOOK_URL=${WEBHOOK_URL}
       - GENERIC_TIMEZONE=America/Sao_Paulo
       - TZ=America/Sao_Paulo
       # Criptografa as credenciais salvas no n8n. Definida no .env local.
@@ -31,6 +35,17 @@ services:
       - "127.0.0.1:6333:6333"
     volumes:
       - qdrant_storage:/qdrant/storage
+
+  # Túnel Cloudflare: publica os webhooks do n8n numa URL temporária
+  # (https://*.trycloudflare.com) pra o Telegram entregar as mensagens.
+  # Quick tunnel — sem conta e sem custo. Uso de desenvolvimento/demo.
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: cloudflared
+    restart: unless-stopped
+    command: tunnel --no-autoupdate --url http://n8n:5678
+    depends_on:
+      - n8n
 
 volumes:
   n8n_data:
