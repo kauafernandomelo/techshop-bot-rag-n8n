@@ -1,7 +1,0 @@
-# Normaliza quebras de linha para LF em todo arquivo de texto.
-* text=auto eol=lf
-
-# Arquivos binários — não normalizar.
-*.png binary
-*.jpg binary
-*.gif binary
